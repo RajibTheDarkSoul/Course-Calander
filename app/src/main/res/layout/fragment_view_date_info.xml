@@ -2,29 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
+    android:visibility="visible"
     tools:context=".viewDateInfo">
 
     <LinearLayout
-        android:layout_width="422dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="5dp"
         android:layout_weight="1"
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="20dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="350dp"
+            android:id="@+id/imageViewCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@android:drawable/btn_dialog" />
+            android:src="@android:drawable/checkbox_on_background" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:orientation="horizontal">
 
         <TextView
@@ -34,7 +37,7 @@
             android:layout_marginLeft="50dp"
             android:text="16"
             android:textColor="#100000"
-            android:textSize="34sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textViewMonth"
@@ -43,7 +46,7 @@
             android:layout_marginLeft="50dp"
             android:text="January"
             android:textColor="#100000"
-            android:textSize="34sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textViewYear"
@@ -52,18 +55,81 @@
             android:layout_marginLeft="50dp"
             android:text="2023"
             android:textColor="#100000"
-            android:textSize="34sp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 
-    <Switch
-        android:id="@+id/switch1"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_height="170dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:text="View Notes" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:text="Add Notes" />
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/switchClassPlaced"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:layout_weight="1"
         android:text="Class placed"
         android:textColor="#5305DD"
         android:textSize="20sp" />
+
+    <LinearLayout
+        android:id="@+id/layoutAsk"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="Course Name:"
+            android:textColor="#190101"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_weight="1"
+            android:text="Attended?"
+            android:textColor="#190101"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listViewInfo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:visibility="visible" />
 
 </LinearLayout>

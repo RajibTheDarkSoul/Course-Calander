@@ -26,7 +26,7 @@ public class welcomeLayout extends AppCompatActivity {
 
         setContentView(R.layout.activity_welcome_layout);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("FirstSaved", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("my_preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
 
@@ -59,9 +59,9 @@ public class welcomeLayout extends AppCompatActivity {
                 duration=Integer.parseInt(dur);
 
 
-                editor.putInt("Smonth", month);
-                editor.putInt("Sdate", date);
-                editor.putInt("Syear", year);
+                editor.putInt("month", month);
+                editor.putInt("date", date);
+                editor.putInt("year", year);
                 editor.putInt("duration", duration);
 
                 // Commit the changes to SharedPreferences
@@ -74,6 +74,7 @@ public class welcomeLayout extends AppCompatActivity {
                 intent.putExtra("duration", duration);
 
                 //startActivity(intent);
+                setResult(RESULT_OK, intent);
                 finish();
 
 
