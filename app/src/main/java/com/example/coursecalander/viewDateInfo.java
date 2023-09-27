@@ -1,7 +1,10 @@
 package com.example.coursecalander;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,6 +94,9 @@ public class viewDateInfo extends DialogFragment {
             //ArrayList<Integer> arrayList3 = (ArrayList<Integer>) args.getSerializable("TotalClass");
 
             MainActivity.Day Object = (MainActivity.Day) args.getSerializable("dayObject");
+            day.setText(Integer.toString(Object.day));
+            month.setText(months.get(Object.month));
+            year.setText(Integer.toString(Object.year));
 
             if (arrayList1 != null) {
                 // Now you have access to the ArrayList
@@ -127,6 +135,9 @@ public class viewDateInfo extends DialogFragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+
 
                 //updateArrayList(fattended,fTotalClass);
                 Log.d("Updated class:",TextUtils.join(",",dayObject.ClassPlaced));
@@ -310,6 +321,8 @@ public class viewDateInfo extends DialogFragment {
 
            // updateArrayList(fattended,fTotalClass);
            // ((MainActivity)getActivity()).backFromFragment(dayObject);
+        ((MainActivity)getActivity()).backFromFragment(dayObject);
+
 
     }
 

@@ -14,6 +14,7 @@ import android.widget.CalendarView;
 import android.widget.ListView;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
 
             SharedPreferences preferences = getSharedPreferences("my_preferences", MODE_PRIVATE);
             SharedPreferences.Editor ed= preferences.edit();
-
+            //Log.d("Not firdt","not");
 
             startdate = preferences.getInt("date", 0);
             startmonth = preferences.getInt("month", 0);
@@ -66,6 +67,14 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
             String json = preferences.getString("courses", null);
             String attend = preferences.getString("attend", null);
             String total = preferences.getString("totalclass", null);
+            String jso = preferences.getString("Saved_days", null);
+
+            //Retrieving Days arraylist
+
+
+// Convert the JSON string back to your ArrayList of custom objects
+
+
 
             if (json != null) {
                 // Convert JSON string back to ArrayList
@@ -92,7 +101,12 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
                 Days=createDayObjects(startdate,startmonth,startyear,t);
 
             }
+
             ed.putBoolean("no_object_created",false);
+            if (jso!=null){
+                Gson gs= new Gson();
+                Days = gs.fromJson(jso,new TypeToken<ArrayList<Day>>() {}.getType());}
+            Log.d("Days","Days retrieved");
 
         }
 
@@ -261,9 +275,9 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
 
 
     public class Day implements Serializable {
-        private int day;
-        private int month;
-        private int year;
+        int day;
+         int month;
+         int year;
         boolean isPlaced=false;
         private ArrayList<String> photos;
         private ArrayList<String>courses;
@@ -320,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
 
         if (attended!=null) {
             ArrayList<String> StringAttend = new ArrayList<>();
-            for (Integer value : attended) {
+            for (Integer value : totalAttended()) {
                 StringAttend.add(String.valueOf(value));
             }
         ArrayAdapter<String> adapterAttend = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, StringAttend);
@@ -332,7 +346,7 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
 
             if (TotalClass != null) {
                 ArrayList<String> StringTotal = new ArrayList<>();
-                for (Integer value : TotalClass) {
+                for (Integer value : totalClasses()) {
                     StringTotal.add(String.valueOf(value));
                 }
 
@@ -394,42 +408,21 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
         Days.set(searchPos(obj.day, obj.month, obj.year),obj);
 
 
+        Gson gson = new Gson();
+        String js = gson.toJson(Days);
+
+// Save the JSON string to SharedPreferences
+        SharedPreferences preferences = getSharedPreferences("my_preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("Saved_days", js);
+        editor.apply();
+
+
         //Log.d("Updating object:",TextUtils.join(",", (Iterable) Days.get(searchPos(obj.day, obj.month, obj.year))));
 
        // Log.d("Check Arraylist",TextUtils.join(",",Days.get(searchPos(obj.day, obj.month, obj.year)).ClassPlaced));
         Log.d("array size",String.valueOf(Days.size()));
-//        if (courses!=null){
-//            ArrayAdapter<String> adapterCourseName = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, courses);
-//            adapterCourseName.notifyDataSetChanged();
-//            listViewNames.setAdapter(adapterCourseName);}
-//
-//
-//
-//
-//        if (attended!=null) {
-//            ArrayList<String> StringAttend = new ArrayList<>();
-//            for (Integer value : attended) {
-//                StringAttend.add(String.valueOf(value));
-//            }
-//            ArrayAdapter<String> adapterAttend = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, StringAttend);
-//            if (StringAttend!=null){
-//                adapterAttend.notifyDataSetChanged();
-//                listViewAttended.setAdapter(adapterAttend);}}
-//
-//
-//
-//        if (TotalClass != null) {
-//            ArrayList<String> StringTotal = new ArrayList<>();
-//            for (Integer value : TotalClass) {
-//                StringTotal.add(String.valueOf(value));
-//            }
-//
-//            ArrayAdapter<String> adapterTotal = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, StringTotal);
-//            if (StringTotal != null) {
-//                adapterTotal.notifyDataSetChanged();
-//                listViewTotal.setAdapter(adapterTotal);
-//            }
-//        }
+
 
     }
 
@@ -526,4 +519,32 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
 
         return Days.size()-1;
     }
+
+    ArrayList<Integer> totalAttended(){
+        ArrayList<Integer> tmp=new ArrayList<>();
+        for (int i=0;i<courses.size();i++){
+            int tm=0;
+            for(int j=0;j<Days.size();j++){
+                tm+=Days.get(j).attended.get(i);
+            }
+            tmp.add(tm);
+        }
+
+
+        return tmp;
+    }
+    ArrayList<Integer> totalClasses(){
+        ArrayList<Integer> tmp=new ArrayList<>();
+        for (int i=0;i<courses.size();i++){
+            int tm=0;
+            for(int j=0;j<Days.size();j++){
+                tm+=Days.get(j).ClassPlaced.get(i);
+            }
+            tmp.add(tm);
+        }
+
+
+        return tmp;
+    }
+
 }
