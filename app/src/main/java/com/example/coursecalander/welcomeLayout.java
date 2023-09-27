@@ -64,6 +64,7 @@ public class welcomeLayout extends AppCompatActivity {
                 editor.putInt("year", year);
                 editor.putInt("duration", duration);
 
+
                 // Commit the changes to SharedPreferences
                 editor.apply();
 

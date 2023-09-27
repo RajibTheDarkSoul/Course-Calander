@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -30,6 +31,7 @@ import java.util.Map;
 
 
 public class viewDateInfo extends DialogFragment {
+    MainActivity.Day dayObject;
     private DialogInterface.OnDismissListener onDismissListener;
     Switch aSwitch;
     TextView day,month,year;
@@ -83,25 +85,28 @@ public class viewDateInfo extends DialogFragment {
         Bundle args = getArguments();
         if (args != null) {
             ArrayList<String> arrayList1 = (ArrayList<String>) args.getSerializable("courses");
-            ArrayList<Integer> arrayList2 = (ArrayList<Integer>) args.getSerializable("attended");
-            ArrayList<Integer> arrayList3 = (ArrayList<Integer>) args.getSerializable("TotalClass");
+            //ArrayList<Integer> arrayList2 = (ArrayList<Integer>) args.getSerializable("attended");
+            //ArrayList<Integer> arrayList3 = (ArrayList<Integer>) args.getSerializable("TotalClass");
+
+            MainActivity.Day Object = (MainActivity.Day) args.getSerializable("dayObject");
+
             if (arrayList1 != null) {
                 // Now you have access to the ArrayList
                 fcourses=arrayList1;
             }
-            if (arrayList2 != null) {
-                // Now you have access to the ArrayList
-                fattended=arrayList2;
+
+            if (Object!=null){
+                dayObject=Object;
             }
-            if (arrayList3 != null) {
-                // Now you have access to the ArrayList
-                fTotalClass=arrayList3;
-            }
+           // Log.d("View date Class placed:", TextUtils.join(", ", dayObject.ClassPlaced));
 
         }
-        CustomAdapter customAdapter = new CustomAdapter(getContext(), fcourses);
+        CustomAdapter customAdapter = new CustomAdapter(getContext(),dayObject.attended,dayObject.ClassPlaced );
         listView.setAdapter(customAdapter);
         Log.d("ArrayListItems", TextUtils.join(", ", fcourses));
+
+
+        //Log.d("View date Class placed:", TextUtils.join(", ", dayObject.ClassPlaced));
 
 
         aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -122,7 +127,12 @@ public class viewDateInfo extends DialogFragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity)getActivity()).backFromFragment();
+
+                //updateArrayList(fattended,fTotalClass);
+                Log.d("Updated class:",TextUtils.join(",",dayObject.ClassPlaced));
+               // Log.d("ArrayListItems", TextUtils.join(", ", fcourses));
+                ((MainActivity)getActivity()).backFromFragment(dayObject);
+
                 dismiss();
             }
         });
@@ -142,18 +152,23 @@ public class viewDateInfo extends DialogFragment {
         private Context context;
         private List<String> items;
         private List<Boolean> selectionList;
-
-        public CustomAdapter(Context context, List<String> items) {
+        private ArrayList<Integer>attended;
+        private ArrayList<Integer>ClassPlaced;
+        public CustomAdapter(Context context, ArrayList<Integer> attended, ArrayList<Integer> ClassPlaced) {
             this.context = context;
-            this.items = items;
-            this.selectionList = new ArrayList<>(Collections.nCopies(items.size(), false));
+            //this.items = items;
+            //this.selectionList = new ArrayList<>(Collections.nCopies(.size(), false));
+            this.attended = attended;
+            this.ClassPlaced = ClassPlaced;
+
+            Log.d("this is after everything, means after view updated"," testing");
         }
 
         @Override
         public int getCount() {
-            return items.size();
+            return fcourses.size();
         }
-
+//
         @Override
         public Object getItem(int position) {
             return items.get(position);
@@ -175,51 +190,84 @@ public class viewDateInfo extends DialogFragment {
             Switch switchSelection = convertView.findViewById(R.id.switchSelection);
             final CheckBox checkBox = convertView.findViewById(R.id.checkBox);
 
-            textView.setText(items.get(position));
-            checkBox.setChecked(selectionList.get(position));
+            textView.setText(fcourses.get(position));
+            boolean curCB=false;
+            if (attended.get(position)==1){
+                curCB=true;
+            }
+            checkBox.setChecked(curCB);
+            switchSelection.setChecked(ClassPlaced.get(position) == 1);
 
             // Enable/disable the checkbox based on the switch state
-            checkBox.setEnabled(switchSelection.isChecked());
+            checkBox.setEnabled(ClassPlaced.get(position) == 1);
 
-            switchSelection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+
+            switchSelection.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    // Enable/disable the checkbox based on the switch state
-                    checkBox.setEnabled(isChecked);
-                    if (isChecked){
-                    fTotalClass.set(position, fTotalClass.get(position) + 1);}
-                    else{
-                        fTotalClass.set(position, fTotalClass.get(position) - 1);
-                    }
-                    updateArrayList(fattended,fTotalClass);
+                public void onClick(View view) {
+                   // Log.d("Onlick",Integer.toString(view.));
                 }
             });
 
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+//            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                @Override
+//                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                    attended.set(position, isChecked ? 1 : 0);
+//
+//                   // Log.d("Inside custom Adapter", TextUtils.join(", ", ClassPlaced));
+//                }
+//            });
+//
+//            switchSelection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                @Override
+//                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                    Log.d("Before Inside custom Adapter", TextUtils.join(", ", ClassPlaced));
+//                    ClassPlaced.set(position, isChecked ? 1 : 0);
+//                    Log.d("After Inside custom Adapter", TextUtils.join(", ", ClassPlaced));
+//                }
+//            });
+
+            switchSelection.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    selectionList.set(position, isChecked);
-                    if (isChecked){
-                        fattended.set(position, fattended.get(position) + 1);
-
+                public void onClick(View v) {
+                    boolean isChecked = switchSelection.isChecked();
+                    // Update your ClassPlaced array based on isChecked
+                    if (isChecked) {
+                        dayObject.ClassPlaced.set(position, 1);
+                    } else {
+                        dayObject.ClassPlaced.set(position, 0);
                     }
-                    else
-                    {
-                        fattended.set(position, fattended.get(position) - 1);
-                    }
-                    updateArrayList(fattended,fTotalClass);
-                    Log.d("AttendItem", TextUtils.join(", ", fattended));
+                    notifyDataSetChanged(); // Notify the adapter of data change
                 }
-
             });
+
+            // Add OnClickListener for the checkbox
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    boolean isChecked = checkBox.isChecked();
+                    // Update your attended array based on isChecked
+                    if (isChecked) {
+                        dayObject.attended.set(position, 1);
+                    } else {
+                        dayObject.attended.set(position, 0);
+                    }
+                    notifyDataSetChanged(); // Notify the adapter of data change
+                }
+            });
+
+            notifyDataSetChanged();
 
             return convertView;
+
         }
 
         // Provide a method to get the selection state
-        public List<Boolean> getSelectionList() {
-            return selectionList;
-        }
+//        public List<Boolean> getSelectionList() {
+//            return selectionList;
+//        }
     }
 
     public interface OnArrayListUpdatedListener {
@@ -251,7 +299,52 @@ public class viewDateInfo extends DialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (onDismissListener!=null){
-            ((MainActivity)getActivity()).backFromFragment();
+            //updateArrayList(fattended,fTotalClass);
+            ((MainActivity)getActivity()).backFromFragment(dayObject);
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+           // updateArrayList(fattended,fTotalClass);
+           // ((MainActivity)getActivity()).backFromFragment(dayObject);
+
+    }
+
+
+    public class CourseModel {
+        private String courseName;
+        private boolean switchState;
+        private boolean checkboxState;
+
+        public CourseModel(String courseName, boolean switchState, boolean checkboxState) {
+            this.courseName = courseName;
+            this.switchState = switchState;
+            this.checkboxState = checkboxState;
+        }
+
+        // Getters and setters for the properties
+        public String getCourseName() {
+            return courseName;
+        }
+
+        public boolean isSwitchState() {
+            return switchState;
+        }
+
+        public void setSwitchState(boolean switchState) {
+            this.switchState = switchState;
+        }
+
+        public boolean isCheckboxState() {
+            return checkboxState;
+        }
+
+        public void setCheckboxState(boolean checkboxState) {
+            this.checkboxState = checkboxState;
+        }
+    }
+
 }
