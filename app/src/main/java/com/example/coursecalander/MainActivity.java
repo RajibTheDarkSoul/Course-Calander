@@ -3,10 +3,14 @@ package com.example.coursecalander;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -274,13 +278,14 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
     }
 
 
-    public class Day implements Serializable {
+    @SuppressLint("ParcelCreator")
+    public class Day implements Serializable, Parcelable {
         int day;
          int month;
          int year;
         boolean isPlaced=false;
-        private ArrayList<String> photos;
-        private ArrayList<String>courses;
+         ArrayList<ArrayList<Uri>> photos=new ArrayList<>();
+         ArrayList<String>courses;
         ArrayList<Integer>attended=new ArrayList<>();
         ArrayList<Integer>ClassPlaced=new ArrayList<>();
 
@@ -291,24 +296,35 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
             this.day = day;
             this.month = month;
             this.year = year;
-            this.photos = new ArrayList<>();
+
             this.courses=courses;
             for(int i=0;i<courses.size();i++){
                 this.attended.add(0);
                 this.ClassPlaced.add(0);
+                this.photos.add(new ArrayList<>());
             }
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(@NonNull Parcel dest, int flags) {
+
         }
 
         // Getter and setter methods for day, month, and year
 
-        public void addPhoto(String photoPath) {
-            photos.add(photoPath);
-        }
-
-
-        public ArrayList<String> getPhotos() {
-            return photos;
-        }
+//        public void addPhoto(String photoPath) {
+//            photos.add(photoPath);
+//        }
+//
+//
+//        public ArrayList<String> getPhotos() {
+//            return photos;
+//        }
     }
 
 

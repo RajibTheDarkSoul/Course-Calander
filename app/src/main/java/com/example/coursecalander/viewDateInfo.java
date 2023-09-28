@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -37,6 +39,7 @@ import java.util.Map;
 
 public class viewDateInfo extends DialogFragment {
     MainActivity.Day dayObject;
+    Button viewN,add;
     private DialogInterface.OnDismissListener onDismissListener;
     Switch aSwitch;
     TextView day,month,year;
@@ -84,6 +87,8 @@ public class viewDateInfo extends DialogFragment {
         imageView=view.findViewById(R.id.imageViewCancel);
         llayout=view.findViewById(R.id.layoutAsk);
         listView=view.findViewById(R.id.listViewInfo);
+        add=view.findViewById(R.id.buttonAddNote);
+        viewN=view.findViewById(R.id.buttonViewNote);
 
 
 
@@ -145,6 +150,23 @@ public class viewDateInfo extends DialogFragment {
                 ((MainActivity)getActivity()).backFromFragment(dayObject);
 
                 dismiss();
+            }
+        });
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                ImageFragment imageFragment=new ImageFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Object", dayObject);
+                bundle.putSerializable("courses",fcourses);
+
+                imageFragment.setArguments(bundle);
+
+                imageFragment.show(getChildFragmentManager(),"ImageFragment");
             }
         });
 
@@ -309,55 +331,25 @@ public class viewDateInfo extends DialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (onDismissListener!=null){
-            //updateArrayList(fattended,fTotalClass);
-            ((MainActivity)getActivity()).backFromFragment(dayObject);
+        if (dayObject != null) {
+            // Ensure dayObject is not null before using it
+            ((MainActivity) getActivity()).backFromFragment(dayObject);
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-           // updateArrayList(fattended,fTotalClass);
-           // ((MainActivity)getActivity()).backFromFragment(dayObject);
-        ((MainActivity)getActivity()).backFromFragment(dayObject);
-
-
-    }
-
-
-    public class CourseModel {
-        private String courseName;
-        private boolean switchState;
-        private boolean checkboxState;
-
-        public CourseModel(String courseName, boolean switchState, boolean checkboxState) {
-            this.courseName = courseName;
-            this.switchState = switchState;
-            this.checkboxState = checkboxState;
-        }
-
-        // Getters and setters for the properties
-        public String getCourseName() {
-            return courseName;
-        }
-
-        public boolean isSwitchState() {
-            return switchState;
-        }
-
-        public void setSwitchState(boolean switchState) {
-            this.switchState = switchState;
-        }
-
-        public boolean isCheckboxState() {
-            return checkboxState;
-        }
-
-        public void setCheckboxState(boolean checkboxState) {
-            this.checkboxState = checkboxState;
+        if (dayObject != null) {
+            // Ensure dayObject is not null before using it
+            ((MainActivity) getActivity()).backFromFragment(dayObject);
         }
     }
+
+    public  void backfromImageFragemnt(MainActivity.Day provided){
+        dayObject=provided;
+        Log.d("Images are saved","ar");
+    }
+
 
 }
