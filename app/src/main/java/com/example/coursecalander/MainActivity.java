@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -18,13 +17,12 @@ import android.widget.CalendarView;
 import android.widget.ListView;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends AppCompatActivity implements viewDateInfo.OnArrayListUpdatedListener{
@@ -73,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
             String total = preferences.getString("totalclass", null);
             String jso = preferences.getString("Saved_days", null);
 
+
+
+
             //Retrieving Days arraylist
 
 
@@ -108,8 +109,12 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
 
             ed.putBoolean("no_object_created",false);
             if (jso!=null){
+                try{
                 Gson gs= new Gson();
                 Days = gs.fromJson(jso,new TypeToken<ArrayList<Day>>() {}.getType());}
+                catch (Exception e){
+                    Log.d("Exception whiling retrieving image","!");
+                }}
             Log.d("Days","Days retrieved");
 
         }
@@ -288,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
          ArrayList<String>courses;
         ArrayList<Integer>attended=new ArrayList<>();
         ArrayList<Integer>ClassPlaced=new ArrayList<>();
+        ArrayList<ArrayList<String>>p=new ArrayList<>();
 
         // Assuming you want to store photo file paths as strings
 
@@ -302,7 +308,22 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
                 this.attended.add(0);
                 this.ClassPlaced.add(0);
                 this.photos.add(new ArrayList<>());
+                this.p.add(new ArrayList<>());
             }
+        }
+
+        ArrayList<ArrayList<Uri>> retrievePhotos(Day d){
+            ArrayList<ArrayList<Uri>> cur= new ArrayList<>();
+
+            for(ArrayList<String> ph :d.p){
+                ArrayList<Uri> tm=new ArrayList<>();
+                for (String s:ph){
+                    tm.add(Uri.parse(s));
+                }
+                cur.add(tm);
+            }
+            return cur;
+
         }
 
         @Override
@@ -426,6 +447,25 @@ public class MainActivity extends AppCompatActivity implements viewDateInfo.OnAr
 
         Gson gson = new Gson();
         String js = gson.toJson(Days);
+        // Serialize Day object to Gson string
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//
+//// Convert Uri objects to strings before serialization
+//        ArrayList<Day>tmpD= (ArrayList<Day>) Days.clone();
+//        for(Day d :tmpD) {
+//            for (ArrayList<Uri> uriList : d.photos) {
+//                for (int i = 0; i < uriList.size(); i++) {
+//                    Uri uri = uriList.get(i);
+//                    if (uri != null) {
+//                        d.p.set(i, uri.toString());
+//                    }
+//                }
+//            }
+//        }
+//        tmpD.clear();
+//
+//        String js = gson.toJson(Days);
+
 
 // Save the JSON string to SharedPreferences
         SharedPreferences preferences = getSharedPreferences("my_preferences", MODE_PRIVATE);

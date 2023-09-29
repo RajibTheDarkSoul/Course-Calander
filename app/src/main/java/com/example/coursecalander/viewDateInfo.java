@@ -170,6 +170,23 @@ public class viewDateInfo extends DialogFragment {
             }
         });
 
+
+        viewN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showObjectImage showObjectImage=new showObjectImage();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Object", dayObject);
+                bundle.putSerializable("courses",fcourses);
+
+                showObjectImage.setArguments(bundle);
+
+                showObjectImage.show(getChildFragmentManager(),"ImageFragment");
+
+            }
+        });
+
         // Inflate the layout for this fragment
         return  view;
        // return inflater.inflate(R.layout.fragment_view_date_info, container, false);

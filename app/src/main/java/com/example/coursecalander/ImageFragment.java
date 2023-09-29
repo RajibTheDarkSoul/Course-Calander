@@ -23,6 +23,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 
 public class ImageFragment extends DialogFragment {
@@ -116,12 +119,23 @@ public class ImageFragment extends DialogFragment {
 //                        if(selectedImages!=null){
 //                            obj.photos.add(currentPosition, selectedImages);}
                         if (selectedImages != null) {
-                            ArrayList<Uri> currentPhotos = obj.photos.get(currentPosition);
-                            currentPhotos.addAll(selectedImages);
-                            obj.photos.set(currentPosition, currentPhotos);
+                                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+// Convert Uri objects to strings before serialization
+                            ArrayList<String>tmp=new ArrayList<>();
+                            for (Uri cur:selectedImages){
+                                if (cur != null) {
+                                    tmp.add(cur.toString());
+                                }
+                            }
+
+
+                            ArrayList<String> currentPhotos = obj.p.get(currentPosition);
+                            currentPhotos.addAll(tmp);
+                            obj.p.set(currentPosition, currentPhotos);
                         }
 
-                        Log.d("Size of photos:",String.valueOf(obj.photos.get(currentPosition).size()));
+                        Log.d("Size of photos:",String.valueOf(obj.p.get(currentPosition).size()));
                         viewDateInfo a=new viewDateInfo();
                         a.backfromImageFragemnt(obj);
                         dismiss();
